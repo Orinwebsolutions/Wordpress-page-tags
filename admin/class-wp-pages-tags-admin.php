@@ -144,18 +144,20 @@ class Wp_Pages_Tags_Admin
 	public function wppt_custom_columns($column)
 	{
 		global $post;
-		$finalString = '';
+		$metaString = '';
 		$metatitle = get_post_meta($post->ID, 'meta_titles', true);
 		$metatitleArray = explode(",", rtrim($metatitle, ','));
 
 		if (count($metatitleArray) > 0 && $metatitleArray[0]) {
 			foreach ($metatitleArray as $value) {
-				$finalString .= get_post_meta($post->ID, $value, true) . ' , ';
+				$data_title = str_replace('_', ' ', $value);
+
+				$metaString .= ucwords($data_title) . ' : ' . get_post_meta($post->ID, $value, true) . '<br/>';
 			}
 		}
 		switch ($column) {
 			case 'meta':
-				echo rtrim($finalString, ',');
+				echo rtrim($metaString, ',');
 				break;
 		}
 	}

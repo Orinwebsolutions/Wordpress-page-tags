@@ -159,6 +159,8 @@ class Wp_Pages_Tags
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_styles');
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 		$this->loader->add_action('init', $plugin_admin, 'wp_tags_register_shortcodes');
+		$this->loader->add_action('manage_edit-page_columns', $plugin_admin, 'wppt_columns_filter');
+		$this->loader->add_action('manage_pages_custom_column', $plugin_admin, 'wppt_custom_columns');
 	}
 
 	/**

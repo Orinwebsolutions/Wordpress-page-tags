@@ -118,7 +118,7 @@ class Wp_Pages_Tags_Admin
 
 		$data_title = str_replace(' ', '_', $a['title']);
 
-		// $post_meta = get_post_meta($post->ID, $data_title);
+
 		$post_meta = get_post_meta($post->ID, $data_title, true);
 
 		$tagsform = '<div id="wp-post-tags-id" class="' . esc_attr($a['class']) . '" data-max="' . esc_attr($a['max-item']) . '">';
@@ -127,11 +127,36 @@ class Wp_Pages_Tags_Admin
 		if ($content) {
 			$tagsform .= $content;
 		}
-		$tagsform .= '<textarea data-title="' . esc_html($data_title) . '" name="tags" class="tags-area">' . esc_textarea($post_meta) . '</textarea>';
+
+		$tagsform .= '<input name="tags" value="' . esc_html($post_meta) . '" data-title="' . esc_html($data_title) . '"  class="tags-area"/>';
 		$tagsform .= '<input type="hidden" name="page_id" value="' . $post->ID . '"/>';
 		$tagsform .= '<input type="hidden" name="wppt_secret_key" value="' . wp_create_nonce("wppt_secret_nonce") . '"/>';
 		$tagsform .= '</div>';
 
 		return $tagsform;
+	}
+
+	public function wppt_columns_filter($columns)
+	{
+		$columns['meta'] = 'Tags';
+		return $columns;
+	}
+	public function wppt_custom_columns($column)
+	{
+		global $post;
+		$finalString = '';
+		$metatitle = get_post_meta($post->ID, 'meta_titles', true);
+		$metatitleArray = explode(",", rtrim($metatitle, ','));
+
+		if (count($metatitleArray) > 0 && $metatitleArray[0]) {
+			foreach ($metatitleArray as $value) {
+				$finalString .= get_post_meta($post->ID, $value, true) . ' , ';
+			}
+		}
+		switch ($column) {
+			case 'meta':
+				echo rtrim($finalString, ',');
+				break;
+		}
 	}
 }

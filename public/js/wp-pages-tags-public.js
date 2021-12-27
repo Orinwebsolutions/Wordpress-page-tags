@@ -37,9 +37,10 @@
 
   function initials_tags() {
     var $input = $("input[name=tags]")
-      .tagify({
-        whitelist: [{ id: 1, value: "some string" }],
-      })
+      .tagify()
+      // .tagify({
+      //   whitelist: [{ id: 1, value: "some string" }],
+      // })
       .on("add", function (e, tagName) {
         // console.log("JQEURY EVENT: ", "added", tagName);
       })
@@ -50,44 +51,64 @@
     // get the Tagify instance assigned for this jQuery input object
     // so its methods could be accessed
     var jqTagify = $input.data("tagify");
+
+    // var dragsort = new DragSort(jqTagify.DOM.scope, {
+    //   selector: "." + jqTagify.settings.classNames.tag,
+    //   callbacks: {
+    //     dragEnd: onDragEnd,
+    //   },
+    // });
   }
+
+  // function onDragEnd(elm) {
+  // jqTagify.updateValueByDOMTags();
+  // let data = $("#wp-post-tags-id .tags-area").val();
+  // let title = $("#wp-post-tags-id .tags-area").data("title");
+  // let secret = $("input[name=wppt_secret_key]").val();
+  // let page_id = $("input[name=page_id]").val();
+  // ajax_call(data, secret, page_id, title);
+  // console.log("drag end");
+  // }
 
   function tags_add_remove() {
     if ($("#wp-post-tags-id").length) {
       $("#wp-post-tags-id .tags-area").on("change", function () {
-        console.log($(this).val());
         let data = $(this).val();
         let title = $(this).data("title");
         let secret = $("input[name=wppt_secret_key]").val();
         let page_id = $("input[name=page_id]").val();
 
-        clearTimeout(timeout);
-        timeout = setTimeout(function () {
-          $(this).prop("disabled", true);
-          $("tags.tagify").css("opacity", "0.5");
-          jQuery.ajax({
-            type: "post",
-            dataType: "json",
-            url: wppt_script.ajaxurl,
-            data: {
-              action: "wppt_ajax",
-              data: data,
-              nonce: secret,
-              pageid: page_id,
-              meta_title: title,
-            },
-            success: function (response) {
-              $(this).prop("disabled", false);
-              $("tags.tagify").css("opacity", "1");
-              console.log(response);
-            },
-            error: function (xhr, status, error) {
-              var err = eval("(" + xhr.responseText + ")");
-              alert(err.data);
-            },
-          });
-        }, 1000);
+        ajax_call(data, secret, page_id, title);
       });
     }
+  }
+
+  function ajax_call(data, secret, page_id, title) {
+    clearTimeout(timeout);
+    timeout = setTimeout(function () {
+      $(this).prop("disabled", true);
+      $("tags.tagify").css("opacity", "0.5");
+      jQuery.ajax({
+        type: "post",
+        dataType: "json",
+        url: wppt_script.ajaxurl,
+        data: {
+          action: "wppt_ajax",
+          data: data,
+          nonce: secret,
+          pageid: page_id,
+          meta_title: title,
+        },
+        success: function (response) {
+          $(this).prop("disabled", false);
+          $("tags.tagify").css("opacity", "1");
+          console.log(response);
+        },
+        error: function (xhr, status, error) {
+          var err = eval("(" + xhr.responseText + ")");
+          alert(err.data);
+        },
+      });
+    }, 1000);
   }
 })(jQuery);

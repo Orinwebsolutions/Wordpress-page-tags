@@ -77,6 +77,7 @@ class Wp_Pages_Tags_Public
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'css/wp-pages-tags-public.css', array(), $this->version, 'all');
 		wp_enqueue_style($this->plugin_name . '_tagfy_css', 'https://unpkg.com/@yaireo/tagify/dist/tagify.css', array(), $this->version, 'all');
+		wp_enqueue_style($this->plugin_name . '_tagfy_drag_css', 'https://unpkg.com/@yaireo/dragsort@1.2.0/dist/dragsort.css', array(), $this->version, 'all');
 	}
 
 	/**
@@ -100,7 +101,8 @@ class Wp_Pages_Tags_Public
 		 */
 
 		wp_enqueue_script($this->plugin_name . '_tagify', 'https://unpkg.com/@yaireo/tagify/dist/jQuery.tagify.min.js', array('jquery'), $this->version, false);
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-pages-tags-public.js', array($this->plugin_name . '_tagify'), $this->version, false);
+		wp_enqueue_script($this->plugin_name . '_tagify_order', 'https://unpkg.com/@yaireo/dragsort@1.2.0/dist/dragsort.js', array('jquery', $this->plugin_name . '_tagify'), $this->version, false);
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/wp-pages-tags-public.js', array($this->plugin_name . '_tagify', $this->plugin_name . '_tagify_order'), $this->version, false);
 		wp_localize_script($this->plugin_name, 'wppt_script', array('ajaxurl' => admin_url('admin-ajax.php')));
 	}
 
